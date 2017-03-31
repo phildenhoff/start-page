@@ -1,0 +1,45 @@
+:root {
+	--bg-color: #DED7B8;
+	--text-color: #95CBB7;
+	--accent-color: #539B91
+}
+
+body {
+	padding: 3vh;
+	width: 94vw;
+	background-color: var(--bg-color);
+}
+
+#search-box {
+	/* Text */
+	font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;
+	font-size: 26px;
+	resize: none;
+	text-align: center;
+	/* Display */
+	display: flex;
+	width: 40vw;
+	height: 6vh;
+	padding: 0px 2vw;
+	margin: auto;
+	position: relative;
+	top: 30vh;
+	align-items: center;
+	justify-content: center;
+	/* Coloring / Styling */
+	color: var(--accent-color);
+	border-width: 0px;
+	border-bottom: 2px solid var(--text-color);
+	background-color: var(--bg-color);
+	outline: none;
+}
+
+#clock {
+	/* Text */
+	font-family: monospace;
+	font-size: 96px;
+	text-align: center;
+	position: relative;
+	top: 20vh;
+	color: var(--text-color);
+}
