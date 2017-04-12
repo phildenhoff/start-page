@@ -1,7 +1,11 @@
 :root {
-	--bg-color: #DED7B8;
+	/*--bg-color: #DED7B8;
 	--text-color: #95CBB7;
-	--accent-color: #539B91
+	--accent-color: #539B91*/
+	--bg-color: #2F4858;
+	--text-color: #F26419;
+	--accent-color: #F6AE2D;
+	/* colors from https://coolors.co/55dde0-33658a-2f4858-f6ae2d-f26419 */
 }
 
 body {

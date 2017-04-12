@@ -1,0 +1,35 @@
+When it comes to new tab pages, there is nothing better than a page customised to your own likings. For that reason, and because I need some goshdarned practice, I'm going to write my own new-tab / start page. Firstly, it's important to see the goals of the project, then how those goals can be met, and then building a timeline for completion. Once that is done I can evaluate what is good and what ain't.
+
+Goals of the Project
+	1. Streamline my logon procedure towards completing jobs and not wasting time
+		a) Have a list of to do tasks, short term and long term
+		b) Give a quick-launch option, to open work related tabs
+		c) Block access to work detractors (low-value high volume information), such as:
+			- Reddit
+			- Facebook
+			- YouTube
+			- UsedVictoria
+			- Craigslist
+
+	rm 2. Make it easier to do tasks on my computer
+		a) Allow for script running or writing
+		b) Launch programs
+			- With default arguments
+			- With specified commands
+
+	rm 3. Encourage learning by "reading and doing". This could be done by a "worksheet" to complete, wherein I pose a problem and then look at how to fix it. Google for answers, write them down, then assess answers. Those solutions can then be used later, or at that moment.
+
+	4. Keep goals in focus without providing sensory fatigue (i.e. constantly reminding the user of ALL information, instead of only what is important)
+		- Could be a schedluded reminder of goals, only to appear on random days
+
+	5. Inspire a creative outlet other than programming, such as music playing or design
+
+	rm 6. Allow for lazy indulgences, such as Netflix or Plex movies / series
+		- Keeping a "to-watch" list might be a good way of directing this movie watching, instead of randomly watching new TV shows
+
+	7. Add a built-in pomodoro timer to keep life on track! (Either self-built or using tomato timer)
+
+Meeting Goals
+
+	1 can be met by a list of to do tasks always available, as well as daily reminders of what tasks to get done. This scheduler would also feed into (4) by giving goal reminders at irregular intervals. 5 could simply be links available, that go to a sheet music site or something.
+	7 would certainly have to be separated from the rest, but a built-in command that could make a popup window perhaps?
