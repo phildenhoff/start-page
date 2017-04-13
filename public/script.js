@@ -292,7 +292,7 @@ function nextPomodoro(durationQueue, timerFinished) {
   if (timerFinished === true) {
     var audio = new Audio("sounds/345815__vendarro__alarm-no.mp3");
     audio.play();
-    alert("BZZ BZZ, BZZ BZZ");
+    notify("BZZ BZZ, BZZ BZZ");
   }
   // hide container & timers
   container = document.getElementById("timerContainer")
