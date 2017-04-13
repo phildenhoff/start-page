@@ -1,6 +1,6 @@
 // ------ Basic startup ------ //
-POMODORO_TIMER = 0; // seconds in pomodoro timer (25 * 60, 5 * 60)
-POMODORO_COUNT = 0 // successfully completed pomodoro rounds (25 + 5)
+var pomodoroTimer; // seconds in pomodoro timer (25 * 60, 5 * 60)
+var POMODORO_COUNT = 0 // successfully completed pomodoro rounds (25 + 5)
 
 window.onload = function() {
   clock();
@@ -77,15 +77,22 @@ function showHelp(cmd) {
   }
 }
 
-function displayError(error) {
-  // TODO replace with red drop-down bar
-  alert(error);
-}
 
 function clearInput() {
   document.getElementById('search-box').value = "";
 }
 
+// ------ Display & Notifications ------ //
+
+function notify(message) {
+  // TODO replace with drop-down notification
+  alert(message);
+}
+
+function displayError(error) {
+  // TODO replace with red drop-down bar
+  alert(error);
+}
 // ------ Command Handling ------ //
 
 function isValidCommand(cmd) {
@@ -137,8 +144,8 @@ function searchCommand(cmd, args) {
 }
 
 function localCommand(cmd, args) {
-  console.log("local command " + cmd + " with args " + args);
-  console.log("Usage: " + COMMANDS[cmd]["helpCommand"]);
+  // console.log("local command " + cmd + " with args " + args);
+  // console.log("Usage: " + COMMANDS[cmd]["helpCommand"]);
   if (!true) {
     // error handling for bad arguments
     throw {
@@ -149,8 +156,8 @@ function localCommand(cmd, args) {
 }
 
 function browserCommand(cmd, args) {
-  console.log("On page command " + cmd + " with args " + args);
-  console.log("Usage: " + COMMANDS[cmd]["helpCommand"]);
+  // console.log("On page command " + cmd + " with args " + args);
+  // console.log("Usage: " + COMMANDS[cmd]["helpCommand"]);
   command = COMMANDS[cmd];
   if (window[command["functionName"]]) {
     window[command["functionName"]](cmd, args);
@@ -182,38 +189,42 @@ function pomodoro(cmd, args) {
     showHelp(cmd);
     return;
   }
-  if (argArray.length < 2 && argArray[0].toLowerCase() != "pause") {
-    throw {
-      name:"BadArgument",
-      message:"Insufficient argument length for " + cmd
-    }
-  } else {
-    switch (argArray[0]) {
-      case "start":
-        n = argArray[1];
-        if (isFinite(n) && parseFloat(n) == n) {
-          console.log("Setting timer for " + n + " minutes");
-          // but not actually
-          // check out http://stackoverflow.com/questions/16134997/how-to-pause-and-resume-a-javascript-timer
-          // for a possible timer?
-        } else {
-          throw {
-            name:"BadArgument",
-            message:"Invalid duration "+ n
+  switch (argArray[0]) {
+    case "start":
+      // default behaviour: 25 minute timer + 5 minute break
+      // if arg is given, will run 25 + 5, arg times
+      var durationQueue = [25, 5]
+      if (isFinite(argArray[1]) && parseFloat(argArray[1]) == argArray[1]) {
+        if (argArray[1]) {
+          for (i = 0; i < argArray[1] - 1; i++) {
+            durationQueue.push(25);
+            durationQueue.push(5);
           }
+          console.log(durationQueue);
         }
-        break;
-      case "reset":
-        // reset timer
-        break;
-      case "pause":
-        // pause timer
-        break;
-      default:
+      } else if (typeof argArray[1] !== 'undefined') {
+        console.log(argArray[1]);
         throw {
           name:"BadArgument",
-          message:"Subcommand \'"+ argArray[0] + "\' not recognized or missing argument"
+          message:"Invalid duration " + argArray[1]
+        }
       }
+      nextPomodoro(durationQueue);
+      // check out http://stackoverflow.com/questions/16134997/how-to-pause-and-resume-a-javascript-timer
+      break;
+    case "reset":
+      pomodoroTimer.reset()
+      break;
+    case "pause":
+      pomodoroTimer.pause()
+      break;
+    case "resume":
+      pomodoroTimer.resume()
+      break;
+    default:
+      throw {
+        name:"BadArgument",
+        message:"Subcommand \'"+ argArray[0] + "\' not recognized or missing argument"
     }
   }
 }
@@ -233,14 +244,28 @@ function clock() {
   setTimeout(clock, 1000);
 }
 
-function startTimer(seconds, container, oncomplete) {
-  var startTime, timer, obj, ms = seconds * 1000, display = document.getElementById(container);
+function startTimer(seconds, onComplete, nextDurations) {
+  /* oncomplete must at least accept nextDurations */
+  var startTime, timer, obj, ms = seconds * 1000,
+      display = document.getElementById("timer"), state, notify = true;
   obj = {};
   obj.resume = function () {
+    state = 'resumed';
     startTime = new Date().getTime();
     timer = setInterval(obj.step, 250);
   };
+  obj.delete = function () {
+    ms = 0;
+    onComplete = null;
+    notify = false;
+  }
+  obj.reset = function() {
+    ms = seconds * 1000;
+    obj.resume();
+  }
   obj.pause = function () {
+    if (state === 'paused') return;
+    state = 'paused';
     ms = obj.step();
     clearInterval(timer);
   }
@@ -248,14 +273,50 @@ function startTimer(seconds, container, oncomplete) {
     var now = Math.max(0, ms - (new Date().getTime() - startTime)),
       m = Math.floor(now / 60000), s = Math.floor(now / 1000) % 60;
     s = (s < 10 ? "0" : "") + s;
-    display.innerHTML = m + ":" + s;
+    if (now !== 0) {
+      display.innerHTML = m + ":" + s;
+    }
     if (now == 0) {
       clearInterval(timer);
       obj.resume = function() {};
-      if ( oncomplete ) oncomplete();
+      if (onComplete) onComplete(nextDurations, notify);
     }
     return now;
   }
   obj.resume();
   return obj;
+}
+
+function nextPomodoro(durationQueue, timerFinished) {
+  // notify user time is up!
+  if (timerFinished === true) {
+    var audio = new Audio("sounds/345815__vendarro__alarm-no.mp3");
+    audio.play();
+    alert("BZZ BZZ, BZZ BZZ");
+  }
+  // hide container & timers
+  container = document.getElementById("timerContainer")
+  container.className += " fadeout";
+  // remove excess timers
+  var elements = container.getElementsByClassName("additionalTimer");
+  while (elements[0]) {
+      elements[0].parentNode.removeChild(elements[0]);
+  }
+  // escape if no more timers
+  if (durationQueue.length === 0) return;
+  // if timers, fadein timer and then add timers in queue
+  document.getElementById('timer').innerHTML = durationQueue[0]+":00";
+  console.log(durationQueue[0]);
+  container.className = "fadein"
+  for (var i = 1; i < durationQueue.length && i < 4; i++) {
+    var additionalTimer = document.createElement('span');
+    additionalTimer.innerHTML = durationQueue[i]+":00";
+    additionalTimer.className = "additionalTimer";
+    additionalTimer.className += " fadein";
+    document.getElementById('timerContainer').append(additionalTimer)
+  }
+  duration = durationQueue.shift();
+
+  if (pomodoroTimer) pomodoroTimer.delete(); // prevent timer from having multiple durations
+  pomodoroTimer = startTimer(duration*60, nextPomodoro, durationQueue);
 }
