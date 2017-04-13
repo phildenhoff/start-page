@@ -133,7 +133,7 @@ function searchCommand(cmd, args) {
   } else {
     var url = command["url"];
   }
-  redirect(url, false);
+  redirect(url, true);
 }
 
 function localCommand(cmd, args) {
@@ -167,12 +167,12 @@ function santise(args) {
 
 
 // ------ Browser Command Handling ------ //
-function redirect(url, newtab) {
-  console.log("redirecting");
-  if (newtab) {
-    window.open(url);
-  } else {
+function redirect(url, newtab=true) {
+  if (newtab === false) {
     window.location.href = url;
+  } else {
+    window.open(url, '_blank');
+    console.log("New tab");
   }
 }
 
