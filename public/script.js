@@ -127,8 +127,12 @@ function commandHandler(cmd, args) {
 
 function searchCommand(cmd, args) {
   var command = COMMANDS[cmd];
-  var santisedText = santise(args);
-  var url = command["url"] + command["search"] + santisedText;
+  if (args.replace(/\s/g, '') != "") {
+    var santisedText = santise(args);
+    var url = command["url"] + command["search"] + santisedText;
+  } else {
+    var url = command["url"];
+  }
   redirect(url, false);
 }
 
