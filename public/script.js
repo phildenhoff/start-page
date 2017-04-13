@@ -1,9 +1,11 @@
 // ------ Basic startup ------ //
 var pomodoroTimer; // seconds in pomodoro timer (25 * 60, 5 * 60)
 var POMODORO_COUNT = 0 // successfully completed pomodoro rounds (25 + 5)
+var DEFAULTTITLE = "get started"
 
 window.onload = function() {
   clock();
+  notifyTitle();
 }
 
 // ------ Basic input handling ------ //
@@ -93,6 +95,16 @@ function displayError(error) {
   // TODO replace with red drop-down bar
   alert(error);
 }
+
+function notifyTitle(message) {
+  console.log("updating title");
+  if (typeof message == 'undefined') {
+    window.document.title = DEFAULTTITLE;
+    return;
+  }
+  window.document.title = message;
+}
+
 // ------ Command Handling ------ //
 
 function isValidCommand(cmd) {
@@ -273,7 +285,9 @@ function startTimer(seconds, onComplete, nextDurations) {
       m = Math.floor(now / 60000), s = Math.floor(now / 1000) % 60;
     s = (s < 10 ? "0" : "") + s;
     if (now !== 0) {
-      display.innerHTML = m + ":" + s;
+      text = m + ":" + s
+      display.innerHTML = text;
+      notifyTitle(text);
     }
     if (now == 0) {
       clearInterval(timer);
