@@ -194,19 +194,18 @@ function pomodoro(cmd, args) {
       // default behaviour: 25 minute timer + 5 minute break
       // if arg is given, will run 25 + 5, arg times
       var durationQueue = [25, 5]
+      // check for correct arg
       if (isFinite(argArray[1]) && parseFloat(argArray[1]) == argArray[1]) {
         if (argArray[1]) {
           for (i = 0; i < argArray[1] - 1; i++) {
             durationQueue.push(25);
             durationQueue.push(5);
           }
-          console.log(durationQueue);
         }
       } else if (typeof argArray[1] !== 'undefined') {
-        console.log(argArray[1]);
         throw {
           name:"BadArgument",
-          message:"Invalid duration " + argArray[1]
+          message:"Invalid duration \'" + argArray[1] +"\'"
         }
       }
       nextPomodoro(durationQueue);
@@ -288,7 +287,7 @@ function startTimer(seconds, onComplete, nextDurations) {
 }
 
 function nextPomodoro(durationQueue, timerFinished) {
-  // notify user time is up!
+  // notify user time is up
   if (timerFinished === true) {
     var audio = new Audio("sounds/345815__vendarro__alarm-no.mp3");
     audio.play();
@@ -297,16 +296,15 @@ function nextPomodoro(durationQueue, timerFinished) {
   // hide container & timers
   container = document.getElementById("timerContainer")
   container.className += " fadeout";
-  // remove excess timers
+  // remove excess additional timers
   var elements = container.getElementsByClassName("additionalTimer");
   while (elements[0]) {
       elements[0].parentNode.removeChild(elements[0]);
   }
-  // escape if no more timers
+  // return if no more timers
   if (durationQueue.length === 0) return;
-  // if timers, fadein timer and then add timers in queue
+  // otherwise, fadein timer and then add queue
   document.getElementById('timer').innerHTML = durationQueue[0]+":00";
-  console.log(durationQueue[0]);
   container.className = "fadein"
   for (var i = 1; i < durationQueue.length && i < 4; i++) {
     var additionalTimer = document.createElement('span');
@@ -315,8 +313,9 @@ function nextPomodoro(durationQueue, timerFinished) {
     additionalTimer.className += " fadein";
     document.getElementById('timerContainer').append(additionalTimer)
   }
+  // remove current timer from queue
   duration = durationQueue.shift();
-
+  // begin timering
   if (pomodoroTimer) pomodoroTimer.delete(); // prevent timer from having multiple durations
   pomodoroTimer = startTimer(duration*60, nextPomodoro, durationQueue);
 }
