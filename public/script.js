@@ -218,7 +218,7 @@ function pomodoro(cmd, args) {
   }
 }
 
-// ------ Clock ------ //
+// ------ Clock  & Timer ------ //
 function clock() {
   // Set clock on landing page
   var formatTime = function (digit) {
@@ -231,4 +231,31 @@ function clock() {
   var min = formatTime(date.getMinutes());
   document.getElementById('clock').innerHTML = hour + ":" + min;
   setTimeout(clock, 1000);
+}
+
+function startTimer(seconds, container, oncomplete) {
+  var startTime, timer, obj, ms = seconds * 1000, display = document.getElementById(container);
+  obj = {};
+  obj.resume = function () {
+    startTime = new Date().getTime();
+    timer = setInterval(obj.step, 250);
+  };
+  obj.pause = function () {
+    ms = obj.step();
+    clearInterval(timer);
+  }
+  obj.step = function() {
+    var now = Math.max(0, ms - (new Date().getTime() - startTime)),
+      m = Math.floor(now / 60000), s = Math.floor(now / 1000) % 60;
+    s = (s < 10 ? "0" : "") + s;
+    display.innerHTML = m + ":" + s;
+    if (now == 0) {
+      clearInterval(timer);
+      obj.resume = function() {};
+      if ( oncomplete ) oncomplete();
+    }
+    return now;
+  }
+  obj.resume();
+  return obj;
 }
