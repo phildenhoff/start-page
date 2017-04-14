@@ -1,0 +1,24 @@
+{
+  "name": "start-page",
+  "version": "1.0.0",
+  "description": "A start page with executable program support",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phildenhoff/start-page.git"
+  },
+  "author": "Phil Denhoff",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phildenhoff/start-page/issues"
+  },
+  "homepage": "https://github.com/phildenhoff/start-page#readme",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1"
+  }
+}

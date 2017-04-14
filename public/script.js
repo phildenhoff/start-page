@@ -224,13 +224,16 @@ function pomodoro(cmd, args) {
       // check out http://stackoverflow.com/questions/16134997/how-to-pause-and-resume-a-javascript-timer
       break;
     case "reset":
-      pomodoroTimer.reset()
+      pomodoroTimer.reset();
       break;
     case "pause":
-      pomodoroTimer.pause()
+      pomodoroTimer.pause();
       break;
     case "resume":
-      pomodoroTimer.resume()
+      pomodoroTimer.resume();
+      break;
+    case "remove":
+      deleteTimer(pomodoroTimer);
       break;
     default:
       throw {
@@ -298,6 +301,18 @@ function startTimer(seconds, onComplete, nextDurations) {
   }
   obj.resume();
   return obj;
+}
+
+function deleteTimer(pomodoroTimer) {
+  pomodoroTimer.delete()
+  container = document.getElementById("timerContainer")
+  container.className = "fadeout";
+  // remove excess additional timers
+  var elements = container.getElementsByClassName("additionalTimer");
+  while (elements[0]) {
+      elements[0].parentNode.removeChild(elements[0]);
+  }
+  document.getElementById('timer').innerHTML = "";
 }
 
 function nextPomodoro(durationQueue, timerFinished) {

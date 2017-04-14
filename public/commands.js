@@ -39,6 +39,15 @@ var COMMANDS = {
     "title":"Google Inbox",
     "helpDesc":"Search your Google Inbox",
   },
+  "h":{
+    "type":"search",
+    "command":"h",
+    "url":"https://hangouts.google.com",
+    "search":"",
+    "title":"Hangouts",
+    "helpCommand":"h;", // optional, defaults to "[COMMAND];[query]"
+    "helpDesc":"Open Hangouts", // optional, defaults to "Search [TITLE]"
+  },
   "pty":{
     "type":"local",
     "command":"pty",
