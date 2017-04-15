@@ -15,6 +15,13 @@ var COMMANDS = {
     "search":"/results?search_query=",
     "title":"YouTube",
   },
+  "plex":{
+    "type":"search",
+    "command":"plex",
+    "url":"https://app.plex.tv/web/app#",
+    "search":"!/server/0ac7620c43f42bb4ffa9d2cc861be1ea823aefc0/search/",
+    "title":"Plex",
+  },
   "dr":{
     "type": "search",
     "command": "dr",
