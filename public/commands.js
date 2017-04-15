@@ -15,6 +15,13 @@ var COMMANDS = {
     "search":"/results?search_query=",
     "title":"YouTube",
   },
+  "dr":{
+    "type": "search",
+    "command": "dr",
+    "url": "https://drive.google.com/",
+    "search": "drive/u/0/search?q=",
+    "title": "Google Drive"
+  }
   "r":{
     "type":"search",
     "command":"r",
