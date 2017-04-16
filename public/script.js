@@ -6,6 +6,7 @@ var DEFAULTTITLE = "get started"
 window.onload = function() {
   clock();
   notifyTitle();
+  populateHelp();
 }
 
 // ------ Basic input handling ------ //
@@ -61,7 +62,13 @@ function showHelp(cmd) {
   // print help to console
   if (cmd) {
     console.log(COMMANDS[cmd]["helpDesc"] + " | " + COMMANDS[cmd]["helpCommand"]);
-  } else {
+  }
+  overlay = document.getElementById("overlay")
+  overlay.className = "open";
+  notify("Check the log for further help", "More info");
+}
+
+function populateHelp() {
     for (var cmd in COMMANDS) {
       var command = COMMANDS[cmd], helpDesc, helpCommand;
       if (command["type"] === "search") {
@@ -76,10 +83,9 @@ function showHelp(cmd) {
           continue;
         }
       }
-      console.log(helpDesc + " | " + helpCommand);
+      list = document.getElementById(command["type"]+"List");
+      list.innerHTML += `<li> ${helpDesc} <br />&emsp;<span class="command">${helpCommand}</span> </li>`
     }
-  }
-  notify("Check the log for further help", "More info");
 }
 
 
@@ -108,6 +114,11 @@ function notifyTitle(message) {
     return;
   }
   window.document.title = message;
+}
+
+function dismissOverlay() {
+    overlay = document.getElementById("overlay")
+    overlay.className = "";
 }
 
 // ------ Command Handling ------ //

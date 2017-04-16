@@ -10,8 +10,8 @@
 
 body {
 	font-size: 16px;
-	padding: 3vh;
-	width: 94vw;
+	width: 100vw;
+	margin: 0;
 	background-color: var(--bg-color);
 }
 
@@ -75,6 +75,61 @@ div[role=alert] {
 	font-family: monospace;
 }
 
+#overlay {
+	width: 100vw;
+	height: 100%;
+	margin: 0;
+	background-color: #F26419;
+	position: absolute;
+	visibility: hidden;
+	opacity: 0;
+	top: 0vh;
+	transition: opacity 0.4s, visibility 0s 0.4s;
+	font-family: sans-serif;
+}
+#overlay.open {
+	opacity: 1;
+	visibility: visible;
+	transition: opacity 0.6s;
+	animation: slidedown 0.6s;
+}
+
+#overlay h1 {
+	text-align: center;
+	font-family: sans-serif;
+	font-size: 2em;
+	margin-top: 5%;
+	color:  var(--bg-color);
+}
+
+section #commandListingContainer {
+	width: 90%;
+	padding-right: 5%;
+	padding-left: 5%;
+	display: flex;
+	flex-direction: row;
+}
+
+section .commandList {
+	width: 30%;
+	color: #332f2f;
+}
+
+section .commandList li {
+	margin-bottom: 16px;
+}
+
+section .commandList h3 {
+	text-align: center;
+	font-family: sans-serif;
+}
+
+section .commandList .command {
+	font-family: monospace;
+	font-size: 0.8em;
+	color:  var(--bg-color);
+}
+
 @media only screen and (max-width: 768px) {
 	#clock {
 		font-size: 15em;
@@ -94,6 +149,11 @@ div[role=alert] {
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+@keyframes slidedown {
+    from { top: -10vh; }
+    to   { top: 0vh; }
 }
 
 @keyframes fadeout {
