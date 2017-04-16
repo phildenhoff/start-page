@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css" type="text/css"/>
+    <!-- include alertifyjs style and theme -->
+    <link rel="stylesheet" href="dist/vanilla-notify.css" />
     <title>get started</title>
 </head>
 
@@ -12,7 +14,25 @@
 
     <input id="search-box" type="text" name="cmd" autofocus onkeydown="return keyDown(event)" autocomplete="off" autocapitalize="none" size="30">
 
-    <div class="helpmenu">
+    <div id="overlay" onclick="dismissOverlay()">
+        <h1 class="title">Help</h1>
+        <section id="commandListingContainer">
+            <section class="commandList">
+                <h3>Search</h3>
+                <ul id="searchList">
+                </ul>
+            </section>
+            <section class="commandList">
+                <h3>Browser</h3>
+                <ul id="browserList">
+                </ul>
+            </section>
+            <section class="commandList">
+                <h3>Local</h3>
+                <ul id="localList">
+                </ul>
+            </section>
+        </section>
       <!-- Things go here -->
     </div>
 
@@ -25,6 +45,7 @@
 
   <script src="script.js"></script>
   <script src="commands.js"></script>
+  <script src="dist/vanilla-notify.js"></script>
 </body>
 
 </html>

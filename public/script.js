@@ -6,6 +6,7 @@ var DEFAULTTITLE = "get started"
 window.onload = function() {
   clock();
   notifyTitle();
+  populateHelp();
 }
 
 // ------ Basic input handling ------ //
@@ -42,7 +43,9 @@ function interpret() {
     // check if text is help,
     // and if not Google the text
     if (inputArray.length > 1) {
-      displayError(inputArray[0] + " is not a valid command");
+      displayError(`'${inputArray[0]}' is not a valid command`);
+      clearInput();
+      return;
     }
     if (input.toLowerCase() === "help") {
       showHelp();
@@ -59,7 +62,13 @@ function showHelp(cmd) {
   // print help to console
   if (cmd) {
     console.log(COMMANDS[cmd]["helpDesc"] + " | " + COMMANDS[cmd]["helpCommand"]);
-  } else {
+  }
+  overlay = document.getElementById("overlay")
+  overlay.className = "open";
+  notify("Check the log for further help", "More info");
+}
+
+function populateHelp() {
     for (var cmd in COMMANDS) {
       var command = COMMANDS[cmd], helpDesc, helpCommand;
       if (command["type"] === "search") {
@@ -74,9 +83,9 @@ function showHelp(cmd) {
           continue;
         }
       }
-      console.log(helpDesc + " | " + helpCommand);
+      list = document.getElementById(command["type"]+"List");
+      list.innerHTML += `<li> ${helpDesc} <br />&emsp;<span class="command">${helpCommand}</span> </li>`
     }
-  }
 }
 
 
@@ -86,14 +95,16 @@ function clearInput() {
 
 // ------ Display & Notifications ------ //
 
-function notify(message) {
+function notify(message, msgTitle) {
   // TODO replace with drop-down notification
-  alert(message);
+  msgTitle = (msgTitle) ? msgTitle : "Notification";
+  vNotify.notify({text:message, title:msgTitle});
 }
 
-function displayError(error) {
+function displayError(error, errorTitle) {
   // TODO replace with red drop-down bar
-  alert(error);
+  errorTitle = (errorTitle) ? errorTitle : "Error";
+  vNotify.error({text:error, title:errorTitle});
 }
 
 function notifyTitle(message) {
@@ -103,6 +114,11 @@ function notifyTitle(message) {
     return;
   }
   window.document.title = message;
+}
+
+function dismissOverlay() {
+    overlay = document.getElementById("overlay")
+    overlay.className = "";
 }
 
 // ------ Command Handling ------ //
