@@ -42,7 +42,9 @@ function interpret() {
     // check if text is help,
     // and if not Google the text
     if (inputArray.length > 1) {
-      displayError(inputArray[0] + " is not a valid command");
+      displayError(`'${inputArray[0]}' is not a valid command`);
+      clearInput();
+      return;
     }
     if (input.toLowerCase() === "help") {
       showHelp();
@@ -77,6 +79,7 @@ function showHelp(cmd) {
       console.log(helpDesc + " | " + helpCommand);
     }
   }
+  notify("Check the log for further help", "More info");
 }
 
 
@@ -86,14 +89,16 @@ function clearInput() {
 
 // ------ Display & Notifications ------ //
 
-function notify(message) {
+function notify(message, msgTitle) {
   // TODO replace with drop-down notification
-  alert(message);
+  msgTitle = (msgTitle) ? msgTitle : "Notification";
+  vNotify.notify({text:message, title:msgTitle});
 }
 
-function displayError(error) {
+function displayError(error, errorTitle) {
   // TODO replace with red drop-down bar
-  alert(error);
+  errorTitle = (errorTitle) ? errorTitle : "Error";
+  vNotify.error({text:error, title:errorTitle});
 }
 
 function notifyTitle(message) {
