@@ -353,7 +353,7 @@ function nextPomodoro(durationQueue, timerFinished) {
   container.className = "fadein"
   for (var i = 1; i < durationQueue.length && i < 4; i++) {
     var additionalTimer = document.createElement('span');
-    additionalTimer.innerHTML = durationQueue[i]+":00";
+    additionalTimer.innerHTML = durationQueue[i] > 10 ? durationQueue[i]+":00" : "&nbsp;" + durationQueue[i]+":00";
     additionalTimer.className = "additionalTimer";
     additionalTimer.className += " fadein";
     document.getElementById('timerContainer').append(additionalTimer)
