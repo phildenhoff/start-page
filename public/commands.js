@@ -62,6 +62,15 @@ var COMMANDS = {
     "helpCommand":"h;", // optional, defaults to "[COMMAND];[query]"
     "helpDesc":"Open Hangouts", // optional, defaults to "Search [TITLE]"
   },
+  "fcc":{
+  	"type":"search",
+  	"command":"fcc",
+  	"url":"https://www.freecodecamp.com/",
+  	"search":"",
+  	"title":"Free Code Camp",
+  	"helpCommand":"fcc;",
+  	"helpDesc":"Open Free Code Camp"
+  },
   "pty":{
     "type":"local",
     "command":"pty",
