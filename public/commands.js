@@ -19,7 +19,7 @@ var COMMANDS = {
     "type":"search",
     "command":"plex",
     "url":"https://app.plex.tv/web/app#",
-    "search":"!/server/0ac7620c43f42bb4ffa9d2cc861be1ea823aefc0/search/",
+    "search":"!/server/308101523183f80723efc9ce7e5e37c4371943a1/search/",
     "title":"Plex",
   },
   "dr":{
