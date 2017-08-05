@@ -71,6 +71,15 @@ var COMMANDS = {
     "helpCommand":"am;[product]",
     "helpDesc":"Search Amazon"
   },
+  "fcc":{
+  	"type":"search",
+  	"command":"fcc",
+  	"url":"https://www.freecodecamp.com/",
+  	"search":"",
+  	"title":"Free Code Camp",
+  	"helpCommand":"fcc;",
+  	"helpDesc":"Open Free Code Camp"
+  },
   "pty":{
     "type":"local",
     "command":"pty",
