@@ -12,10 +12,11 @@
   <section class="container">
     <span id="clock">00:00</span>
 
-    <input id="search-box" type="text" name="cmd" autofocus onkeydown="return keyDown(event)" autocomplete="off" autocapitalize="none" size="30">
+    <input id="search-box" type="text" name="cmd" autofocus onkeydown="return keyDown(event)" autocomplete="off" autocapitalize="none" size="30" placeholder="help">
 
     <div id="overlay" onclick="dismissOverlay()">
         <h1 class="title">Help</h1>
+        <h3 class="subtitle">Press esc to close.</h3>
         <section id="commandListingContainer">
             <section class="commandList">
                 <h3>Search</h3>

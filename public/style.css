@@ -95,11 +95,22 @@ div[role=alert] {
 	animation: slidedown 0.6s;
 }
 
-#overlay h1 {
+#overlay .title {
 	text-align: center;
 	font-family: sans-serif;
 	font-size: 2em;
 	margin-top: 5%;
+	margin-bottom: 1vh;
+	color: var(--alt-text-color);
+}
+
+#overlay .subtitle {
+	text-align: center;
+	font-family: sans-serif;
+	font-size: 1em;
+	font-weight: 200;
+	margin-top: 0;
+	margin-bottom: 3vh;
 	color: var(--alt-text-color);
 }
 
