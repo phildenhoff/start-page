@@ -62,6 +62,15 @@ var COMMANDS = {
     "helpCommand":"h;", // optional, defaults to "[COMMAND];[query]"
     "helpDesc":"Open Hangouts", // optional, defaults to "Search [TITLE]"
   },
+  "am":{
+    "type":'search',
+    "command":"h",
+    "url":"https://www.amazon.ca",
+    "search":"/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=",
+    "title":"Amazon",
+    "helpCommand":"am;[product]",
+    "helpDesc":"Search Amazon"
+  },
   "pty":{
     "type":"local",
     "command":"pty",
