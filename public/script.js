@@ -22,6 +22,8 @@ function keyDown(e) {
   // pressed enter key?
   if (keycode == 13) {
     interpret();
+  } else if (keycode == 27) {
+    handleEsc();
   }
 }
 
@@ -57,15 +59,12 @@ function interpret() {
 }
 
 function showHelp(cmd) {
-  // TODO replace with help overlay
-
   // print help to console
   if (cmd) {
     console.log(COMMANDS[cmd]["helpDesc"] + " | " + COMMANDS[cmd]["helpCommand"]);
   }
   overlay = document.getElementById("overlay")
   overlay.className = "open";
-  notify("Check the log for further help", "More info");
 }
 
 function populateHelp() {
@@ -88,6 +87,18 @@ function populateHelp() {
     }
 }
 
+function handleEsc() {
+  overlay = document.getElementById('overlay');
+  if (overlay.className.includes('open')) {
+    // if overlay is open
+    dismissOverlay();
+  }
+}
+
+function dismissOverlay() {
+    overlay = document.getElementById("overlay")
+    overlay.className = "";
+}
 
 function clearInput() {
   document.getElementById('search-box').value = "";
@@ -114,11 +125,6 @@ function notifyTitle(message) {
     return;
   }
   window.document.title = message;
-}
-
-function dismissOverlay() {
-    overlay = document.getElementById("overlay")
-    overlay.className = "";
 }
 
 // ------ Command Handling ------ //
