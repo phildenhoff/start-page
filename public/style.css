@@ -114,6 +114,13 @@ div[role=alert] {
 	color: var(--alt-text-color);
 }
 
+#overlay .key {
+    color: var(--text-color);
+    background: var(--alt-text-color);
+    padding: 2px 4px 3px 3px;
+    border-radius: 5px;
+}
+
 section #commandListingContainer {
 	width: 90%;
 	padding-right: 5%;
