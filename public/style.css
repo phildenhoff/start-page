@@ -96,6 +96,9 @@ div[role=alert] {
 }
 
 #overlay .title {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+
 	text-align: center;
 	font-family: Roboto, sans-serif;
 	font-size: 2em;
@@ -104,9 +107,6 @@ div[role=alert] {
     padding: 2vh 8px 2vh 8px;
 	color: #fff; 
     background-color: var(--alt-text-color);
-
-    -webkit-margin-before: 0;
-    -webkit-margin-after: 0;
 }
 
 #overlay .subtitle {
