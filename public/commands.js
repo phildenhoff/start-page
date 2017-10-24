@@ -80,6 +80,13 @@ var COMMANDS = {
   	"helpCommand":"fcc;",
   	"helpDesc":"Open Free Code Camp"
   },
+  "u":{
+    "type":"search",
+    "command":"u",
+    "url":"https://",
+    "search":"",
+    "title":"URL",
+  },
   "pty":{
     "type":"local",
     "command":"pty",
