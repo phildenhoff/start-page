@@ -1,6 +1,6 @@
 <template>
   <div id="app" v-on:keyup.esc="hide_help">
-    <span id="clock"> {{ time }}</span>
+    <span id="clock"> {{hours}}:{{minutes}}</span>
     <input id='search-box' v-model="cmd" v-on:keyup.enter="parseCmd" v-on:keyup.up="show_prev_cmd" v-on:keyup.down="show_next_cmd" autofocus autocomplete="off" autocapitalize="none" size="30" placeholder="help">
     
     <transition name="fade">
@@ -30,6 +30,24 @@
 </template>
 
 <script>
+function padZero(num) {
+  if (num < 10) {
+    return '0' + num;
+  } else return num;
+}
+
+function getDate() {
+  return new Date();
+}
+
+function getMinutes() {
+  return padZero(getDate().getMinutes());
+}
+
+function getHour() {
+  return padZero(getDate().getHours() % 12);
+}
+
 export default {
   name: 'app',
   data () {
@@ -39,6 +57,8 @@ export default {
       cmd_history: [],
       cmd_index: 0,
       display_help: false,
+      minutes: 0,
+      hours: 0,
     }
   },
   methods: {
@@ -75,6 +95,13 @@ export default {
       console.log("Hiding the help menu!");
       this.display_help = false;
     }
+  },
+  created: function () {
+    var vm = this;
+    setInterval(() => {
+      vm.minutes = getMinutes();
+      vm.hours = getHour();
+    }, 1000);
   }
 }
 </script>
