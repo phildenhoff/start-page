@@ -65,7 +65,7 @@ export default {
     parseCmd: function () {
       console.log(this.time, this.cmd);
       if (this.cmd === '' || this.cmd.toLowerCase() === 'help') {
-        this.showHelp();
+        this.show_help();
         return;
       }
       this.cmd_history.unshift(this.cmd);
@@ -87,7 +87,7 @@ export default {
         this.cmd_index = 0;
       }
     },
-    showHelp: function () {
+    show_help: function () {
       console.log("Showing help");
       this.display_help = true;
     },
@@ -97,11 +97,21 @@ export default {
     }
   },
   created: function () {
+    // Set timer for clock
     var vm = this;
     setInterval(() => {
       vm.minutes = getMinutes();
       vm.hours = getHour();
     }, 1000);
+    // Load history from LocalStorage
+    if (localStorage.getItem('history')) {
+      this.cmd_history = JSON.parse(localStorage.getItem('history'));
+    }
+  },
+  watch: {
+    cmd_history: function () {
+      localStorage.setItem('history', JSON.stringify(this.cmd_history));
+    } 
   }
 }
 </script>
