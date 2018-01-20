@@ -11,11 +11,19 @@
               <section class="commandList">
                   <h3>Search</h3>
                   <ul id="searchList">
+                    <li v-for="cmd in search_cmds" :key="cmd.command">
+                      {{ cmd.helpDesc || "Search " + cmd.title }}  <br />
+                      <span class="command">{{ cmd.helpCommand }}</span>
+                    </li>
                   </ul>
               </section>
               <section class="commandList">
                   <h3>Browser</h3>
                   <ul id="browserList">
+                    <li v-for="cmd in browser_cmds" :key="cmd.command">
+                      {{ cmd.helpDesc || "Search " + cmd.title }}  <br />
+                      <span class="command">{{ cmd.helpCommand }}</span>
+                    </li>
                   </ul>
               </section>
               <section class="commandList">
@@ -30,6 +38,10 @@
 </template>
 
 <script>
+import * as search_commands from './commands/search.js'
+import * as browser from './commands/browser.js'
+
+
 function padZero(num) {
   if (num < 10) {
     return '0' + num;
@@ -48,17 +60,28 @@ function getHour() {
   return padZero(getDate().getHours() % 12);
 }
 
+function auto_populate(cmd_list, command_file) {
+  for (let val of Object.getOwnPropertyNames(command_file)) {
+    if (val === "__esModule") continue;
+    cmd_list[val] = command_file[val];
+    if (!cmd_list[val]["helpCommand"]) {
+      cmd_list[val]["helpCommand"] = val + ";[query]";
+    }
+  };
+}
+
 export default {
   name: 'app',
   data () {
     return {
-      time: '00:00',
       cmd: '',
       cmd_history: [],
       cmd_index: 0,
       display_help: false,
-      minutes: 0,
-      hours: 0,
+      minutes: '00',
+      hours: '00',
+      search_cmds: {},
+      browser_cmds: {},
     }
   },
   methods: {
@@ -103,10 +126,15 @@ export default {
       vm.minutes = getMinutes();
       vm.hours = getHour();
     }, 1000);
-    // Load history from LocalStorage
+
+// Load history from LocalStorage
     if (localStorage.getItem('history')) {
       this.cmd_history = JSON.parse(localStorage.getItem('history'));
     }
+
+    // Auto populate based on search_commands file
+    auto_populate(this.search_cmds, search_commands);
+    auto_populate(this.browser_cmds, browser);
   },
   watch: {
     cmd_history: function () {
