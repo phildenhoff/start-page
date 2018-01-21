@@ -5,8 +5,12 @@
  * @param {*} tokens Selection of input for user
  * @param {*} vm Vue context
  */
-export let default_function = function(command_info, user_cmd, tokens, vm) {
-    _hidden_functions[command_info.functionName](command_info, user_cmd, tokens, vm);
+export const default_function = function(command_info, user_cmd, tokens, vm) {
+    if (typeof _hidden_functions[command_info.functionName] !== 'undefined') {
+        _hidden_functions[command_info.functionName](command_info, user_cmd, tokens, vm);
+    } else {
+        _hidden_functions.notify('', '', 'Function ' + command_info.functionName +' missing.,The function is not available in browser.js. Check your naming.');
+    }
 }
 
 export const _hidden_functions = {
@@ -29,7 +33,7 @@ export const _hidden_functions = {
     }
 }
 
-export let pd = {
+export const pd = {
     'type':'browser',
     'command':'pd',
     'functionName':'pomodoro',
