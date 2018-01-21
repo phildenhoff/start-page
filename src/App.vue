@@ -20,6 +20,8 @@
           </section>
       </div>
     </transition>
+
+    <notifications group="notify" />
   </div>
 </template>
 
@@ -28,6 +30,7 @@ import * as search from './commands/search.js'
 import * as browser from './commands/browser.js'
 import * as remote from './commands/remote.js'
 
+const DEFAULT_COMMAND = 'g';
 
 function padZero(num) {
   if (num < 10) {
@@ -47,17 +50,22 @@ function getHour() {
   return padZero(getDate().getHours() % 12);
 }
 
-function auto_populate(cmd_list, command_file, list_name, vue_context) {
+function auto_populate(cmd_list, command_file, type, vm) {
   for (let val of Object.getOwnPropertyNames(command_file)) {
+    // Ignore __esModule and set default_function to execute for this file type
     if (val === "__esModule") continue;
+    if (val === 'default_function') {
+      vm.category_functions[type] = command_file[val];
+      continue;
+    }
     cmd_list[val] = command_file[val];
     if (!cmd_list[val]["helpCommand"]) {
       cmd_list[val]["helpCommand"] = val + ";[query]";
     }
   };
-
-  vue_context.command_categories.push({title: list_name, list:cmd_list});
-
+  // Title is upper-cased version of type
+  const title = type.charAt(0).toUpperCase() + type.slice(1);
+  vm.command_categories.push({title, list:cmd_list});
 }
 
 export default {
@@ -73,26 +81,64 @@ export default {
       search_cmds: {},
       browser_cmds: {},
       remote_cmds: {},
-      command_categories: []
+      command_categories: [],
+      category_functions: {},
     }
   },
   methods: {
+    /** Processes user commands. 
+     * Clears command line, opens help menu, 
+     * warns of errors for missing default command, and otherwise executes commands.
+     * @author Phil Denhoff <phildenhoff@gmail.com>
+     */
     parseCmd: function () {
-      console.log(this.time, this.cmd);
-      if (this.cmd === '' || this.cmd.toLowerCase() === 'help') {
-        this.show_help();
-        return;
-      }
-      this.cmd_history.unshift(this.cmd);
+      // Save command to history and clear current input (looks faster)
+      const user_input = this.cmd;
+      let user_cmd;
+      let tokens;
+      this.cmd_history.unshift(user_input);
       this.cmd = '';
       this.cmd_index = 0;
-      console.log(this.cmd_history)
+
+      /* Display help menu if there's empty input. Otherwise, if there is no command,
+      ** use default command (also display an error if that isn't set).
+      ** Otherwise, get the user command and tokens from input.
+      */ 
+      if (user_input === '' || user_input.toLowerCase() === 'help') {
+        this.show_help();
+        return;
+      } else if (!user_input.includes(';')) {
+        if (typeof DEFAULT_COMMAND !== 'undefined') {
+          user_cmd = DEFAULT_COMMAND;
+          tokens = user_input;
+        } else {
+          this.$notify({
+            group: 'notify',
+            title: 'No command to run',
+            type: 'warning',
+            text: 'Default command has not been set.'
+          });
+          return;
+        }
+      } else {
+        [user_cmd, tokens] = user_input.split(';');
+      }
+
+      // Santize tokens
+      const clean_tokens = tokens.trim().replace(/\s/g, '+').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+      // Execute command
+      this.execute(user_cmd, clean_tokens);
     },
+    
+    /** Replaces displayed command with previous command from history. */
     show_prev_cmd: function() {
       this.cmd = this.cmd_history[this.cmd_index];
       if (this.cmd_index < this.cmd_history.length - 1) this.cmd_index++;
       console.log(this.cmd);
     },
+
+    /** Replaces displayed command with next command from history. */
     show_next_cmd: function() {
       if (this.cmd_index > 0) {
         this.cmd_index--;
@@ -102,20 +148,56 @@ export default {
         this.cmd_index = 0;
       }
     },
+
+    /** Displays help menu. */
     show_help: function () {
       console.log("Showing help");
       this.display_help = true;
     },
+
+    /** Hides help menu. */
     hide_help: function() {
-      console.log("Hiding the help menu!");
       this.display_help = false;
+    },
+
+    /** Executes command given by user, using given tokens. Looks for function in categories before executing.
+     * @param {string} user_cmd The command the user wishes to invoke.
+     * @param {string[]} tokens Any arguments the user wishes to apply to the command.
+     */
+    execute: function(user_cmd, tokens) {
+      const [requested_function, command_info] = this.find_function(user_cmd);
+      if (typeof requested_function !== 'undefined') {
+        requested_function(command_info, user_cmd,  tokens);
+      } else {
+        this.$notify({
+            group: 'notify',
+            title: 'Missing function',
+            type: 'warning',
+            text: 'Command not defined in any category.'
+      });
+      }
+    },
+
+    /** Returns the default function for a command, as well as the command info.
+     * @param {string} user_cmd The command the user wishes to invoke.
+     */
+    find_function: function(user_cmd) {
+      for (let cat of this.command_categories) {
+        if (cat.list[user_cmd]) {
+          return [this.category_functions[cat.list[user_cmd].type], cat.list[user_cmd]];
+        }
+      }
+      // no function found
+      return [undefined, undefined];
     }
   },
+  /** Sets timer for clock, loads history from local storage, and populates commands based on files.
+   */
   created: function () {
     // Set timer for clock
     var vm = this;
     setInterval(() => {
-      vm.minutes = getMinutes();
+      vm.minutes = getMinutes()
       vm.hours = getHour();
     }, 1000);
 
@@ -125,12 +207,13 @@ export default {
     }
 
     // Auto populate based on search file
-    auto_populate(this.search_cmds, search, 'Search', vm);
-    auto_populate(this.browser_cmds, browser, 'Browser', vm);
-    auto_populate(this.remote_cmds, remote, 'Remote', vm);
+    auto_populate(this.search_cmds, search, 'search', vm);
+    auto_populate(this.browser_cmds, browser, 'browser', vm);
+    auto_populate(this.remote_cmds, remote, 'remote', vm);
   },
   watch: {
     cmd_history: function () {
+      // Update localstorage when a new item is added to command history.
       localStorage.setItem('history', JSON.stringify(this.cmd_history));
     } 
   }
@@ -262,6 +345,15 @@ export default {
 
   h1.title {
     margin-top: 0;
+  }
+
+  .warning {
+    margin-top: 2vh;
+    margin-left: 2vh;
+    min-width: 15vw;
+    background-color: #e74c3c;
+    border-left-color:#b82e24;
+    font-size: 1.1em;
   }
 
   .fade-enter-active, .fade-leave-active {
