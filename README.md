@@ -114,4 +114,17 @@ npm run dev
 npm run build
 ```
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+### Production
+
+The above outline instructions that are default for [vue-loader](http://vuejs.github.io/vue-loader), however I use a custom build and hosting setup locally. I'm using [poi](https://github.com/egoist/poi) to build the minified files, then deploying onto [Firebase](https://firebase.google.com/). You'll need to create a Firebase project first, with hosting. There are a ton of tutorials on how to use both Poi and Firebase, and this is not one of them.
+
+Building for production looks something like this:
+
+``` bash
+git clone https://www.github.com/phildenhoff/start-page
+npm i poi -D
+npm i firebase
+firebase-login
+firebase-init
+poi build && firebase deploy
+```
