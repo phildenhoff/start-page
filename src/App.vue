@@ -12,7 +12,7 @@
                 <h3>{{category.title}}</h3>
                 <ul id="searchList">
                    <li v-for="cmd in category.list" :key="cmd.command">
-                      {{ cmd.helpDesc || "Search " + cmd.title }}  <br />
+                      {{ cmd.helpDesc }}  <br />
                       <span class="command">{{ cmd.helpCommand }}</span>
                     </li> 
                 </ul>
@@ -58,9 +58,15 @@ function auto_populate(cmd_list, command_file, type, vm) {
       vm.category_functions[type] = command_file[val];
       continue;
     }
+    if (val.includes('_hidden_')) {
+      continue;
+    }
     cmd_list[val] = command_file[val];
     if (!cmd_list[val]["helpCommand"]) {
       cmd_list[val]["helpCommand"] = val + ";[query]";
+    }
+    if (typeof cmd_list[val]['helpDesc'] === 'undefined') {
+      cmd_list[val]['helpDesc'] = cmd_list[val]['title'];
     }
   };
   // Title is upper-cased version of type
@@ -72,17 +78,17 @@ export default {
   name: 'app',
   data () {
     return {
-      cmd: '',
-      cmd_history: [],
-      cmd_index: 0,
-      display_help: false,
+      cmd: '',                // Most recent command
+      cmd_history: [],        // History of all commands, first being most recent
+      cmd_index: 0,           // Location in history of commands
+      display_help: false,    // If try, shows help menu
       minutes: '00',
       hours: '00',
-      search_cmds: {},
-      browser_cmds: {},
-      remote_cmds: {},
-      command_categories: [],
-      category_functions: {},
+      search_cmds: {},        // All available keyboard shortcuts for search category, determined by file.
+      browser_cmds: {},       // All available browser shortcuts
+      remote_cmds: {},        // All available remote shortcuts
+      command_categories: [], // Different categories of commands
+      category_functions: {}, // Functions for each category 
     }
   },
   methods: {
@@ -124,11 +130,8 @@ export default {
         [user_cmd, tokens] = user_input.split(';');
       }
 
-      // Santize tokens
-      const clean_tokens = tokens.trim().replace(/\s/g, '+').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-
       // Execute command
-      this.execute(user_cmd, clean_tokens);
+      this.execute(user_cmd, tokens);
     },
     
     /** Replaces displayed command with previous command from history. */
@@ -167,7 +170,7 @@ export default {
     execute: function(user_cmd, tokens) {
       const [requested_function, command_info] = this.find_function(user_cmd);
       if (typeof requested_function !== 'undefined') {
-        requested_function(command_info, user_cmd,  tokens);
+        requested_function(command_info, user_cmd,  tokens, this);
       } else {
         this.$notify({
             group: 'notify',
