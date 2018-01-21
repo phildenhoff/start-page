@@ -1,8 +1,11 @@
-export const default_function = function(command_info, user_cmd, tokens) {
+export const default_function = function(command_info, user_cmd, tokens, vm) {
+    // Santize tokens
+    const clean_tokens = tokens.trim().replace(/\s/g, '+').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
     let url;
     // check that tokens is not empty. If it is, only go to base url
-    if (tokens.length > 0) {
-        url = command_info.baseUrl + command_info.search + tokens;
+    if (clean_tokens.length > 0) {
+        url = command_info.baseUrl + command_info.search + clean_tokens;
     } else {
         url = command_info.baseUrl;
     }
