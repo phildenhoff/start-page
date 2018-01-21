@@ -6,30 +6,16 @@
     <transition name="fade">
       <div id="overlay" v-if="display_help === true" v-on:click="hide_help">
         <h1 class="title">Help</h1>
-          <h3 class="subtitle">Press esc to close.</h3>
+          <h3 class="subtitle">Press <span class="key">esc</span> to close.</h3>
           <section id="commandListingContainer">
-              <section class="commandList">
-                  <h3>Search</h3>
-                  <ul id="searchList">
-                    <li v-for="cmd in search_cmds" :key="cmd.command">
+              <section class="commandList" v-for="category in command_categories" :key="category.title">
+                <h3>{{category.title}}</h3>
+                <ul id="searchList">
+                   <li v-for="cmd in category.list" :key="cmd.command">
                       {{ cmd.helpDesc || "Search " + cmd.title }}  <br />
                       <span class="command">{{ cmd.helpCommand }}</span>
-                    </li>
-                  </ul>
-              </section>
-              <section class="commandList">
-                  <h3>Browser</h3>
-                  <ul id="browserList">
-                    <li v-for="cmd in browser_cmds" :key="cmd.command">
-                      {{ cmd.helpDesc || "Search " + cmd.title }}  <br />
-                      <span class="command">{{ cmd.helpCommand }}</span>
-                    </li>
-                  </ul>
-              </section>
-              <section class="commandList">
-                  <h3>Local</h3>
-                  <ul id="localList">
-                  </ul>
+                    </li> 
+                </ul>
               </section>
           </section>
       </div>
@@ -38,8 +24,9 @@
 </template>
 
 <script>
-import * as search_commands from './commands/search.js'
+import * as search from './commands/search.js'
 import * as browser from './commands/browser.js'
+import * as remote from './commands/remote.js'
 
 
 function padZero(num) {
@@ -60,7 +47,7 @@ function getHour() {
   return padZero(getDate().getHours() % 12);
 }
 
-function auto_populate(cmd_list, command_file) {
+function auto_populate(cmd_list, command_file, list_name, vue_context) {
   for (let val of Object.getOwnPropertyNames(command_file)) {
     if (val === "__esModule") continue;
     cmd_list[val] = command_file[val];
@@ -68,6 +55,9 @@ function auto_populate(cmd_list, command_file) {
       cmd_list[val]["helpCommand"] = val + ";[query]";
     }
   };
+
+  vue_context.command_categories.push({title: list_name, list:cmd_list});
+
 }
 
 export default {
@@ -82,6 +72,8 @@ export default {
       hours: '00',
       search_cmds: {},
       browser_cmds: {},
+      remote_cmds: {},
+      command_categories: []
     }
   },
   methods: {
@@ -127,14 +119,15 @@ export default {
       vm.hours = getHour();
     }, 1000);
 
-// Load history from LocalStorage
+    // Load history from LocalStorage
     if (localStorage.getItem('history')) {
       this.cmd_history = JSON.parse(localStorage.getItem('history'));
     }
 
-    // Auto populate based on search_commands file
-    auto_populate(this.search_cmds, search_commands);
-    auto_populate(this.browser_cmds, browser);
+    // Auto populate based on search file
+    auto_populate(this.search_cmds, search, 'Search', vm);
+    auto_populate(this.browser_cmds, browser, 'Browser', vm);
+    auto_populate(this.remote_cmds, remote, 'Remote', vm);
   },
   watch: {
     cmd_history: function () {
@@ -201,7 +194,7 @@ export default {
 
   #overlay {
     width: 100vw;
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     background-color: #F26419;
     position: absolute;
@@ -233,7 +226,7 @@ export default {
   #overlay .key {
     color: var(--text-color);
     background: var(--alt-text-color);
-    padding: 2px 4px 3px 3px;
+    padding: 2px 4px 3px 4px;
     border-radius: 5px;
   }
 
