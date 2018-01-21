@@ -48,5 +48,5 @@ export const notify = {
     'functionName': 'notify',
     'title': 'Notify',
     'helpDesc': 'Simple comma-delimted notifications.',
-    'helpCommand': 'pd;[title],[text],[type]'
+    'helpCommand': 'notify;[title],[text],[type]'
 }
