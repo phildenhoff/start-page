@@ -28,6 +28,7 @@ export let yt = {
     'baseUrl':'https://www.youtube.com',
     'search':'/results?search_query=',
     'title':'YouTube',
+    'helpDesc':'Search YouTube',
 };
 
 export let plex = {
@@ -36,6 +37,7 @@ export let plex = {
     'baseUrl':'https://app.plex.tv/web/app#',
     'search':'!/server/308101523183f80723efc9ce7e5e37c4371943a1/search/',
     'title':'Plex',
+    'helpDesc':'Search Plex',
 };
 
 export let r = {
@@ -109,4 +111,5 @@ export let u = {
     'baseUrl':'https://',
     'search':'',
     'title':'URL',
+    'helpDesc':'Open URL'
 };
