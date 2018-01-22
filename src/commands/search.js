@@ -113,3 +113,12 @@ export let u = {
     'title':'URL',
     'helpDesc':'Open URL'
 };
+
+export const hw = {
+    'type':'search',
+    'command':'hw',
+    'baseUrl':'https://myhomeworkapp.com/home',
+    'search':'',
+    'title':'myHomework',
+    'helpDesc':'Open myHomework'
+};
