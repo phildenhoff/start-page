@@ -122,9 +122,12 @@ Building for production looks something like this:
 
 ``` bash
 git clone https://www.github.com/phildenhoff/start-page
+cd start-page
 npm i poi -D
 npm i firebase
-firebase-login
-firebase-init
-poi build && firebase deploy
+npm install
+firebase login
+firebase init
+# move dist/ to firebase folder as 'start/'
+npx poi build && firebase deploy
 ```
