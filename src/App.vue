@@ -47,7 +47,7 @@ function getMinutes() {
 }
 
 function getHour() {
-  return padZero(getDate().getHours() % 12);
+  return padZero(getDate().getHours() % 13);
 }
 
 function auto_populate(cmd_list, command_file, type, vm) {
