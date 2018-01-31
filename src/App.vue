@@ -282,7 +282,7 @@ export default {
     width: 100vw;
     min-height: 100%;
     margin: 0;
-    background-color: #F26419;
+    background-color: #ff945c;
     position: absolute;
     top: 0vh;
     font-family: sans-serif;
@@ -310,7 +310,7 @@ export default {
   }
 
   #overlay .key {
-    color: var(--text-color);
+    color: #ff945c;
     background: var(--alt-text-color);
     padding: 2px 4px 3px 4px;
     border-radius: 5px;
