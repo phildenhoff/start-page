@@ -2,7 +2,7 @@
 
 > A start / new tab page to get there faster.
 
-[Check out a live demo!](https://start-page-1.firebaseapp.com/)
+[Check out a live demo!](https://denhoff.ca/start/)
 
 Interaction is done via a command line in the center. Type `help` (or just press Enter) to see a list of commands.
 
