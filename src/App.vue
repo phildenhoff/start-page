@@ -11,7 +11,10 @@
 
     <transition name='fade'>
       <div id='overlay' v-if='display_help === true'>
-        <h1 class='title'>Help</h1>
+          <header class='title'>
+            <button class='exit' v-on:click='hide_help'></button>
+            <h1>Help</h1>
+          </header>
           <h3 class='subtitle'>Press <span class='key'>esc</span> to close.</h3>
           <section id='commandListingContainer'>
               <section class='commandList' v-for='category in command_categories' :key='category.title'>
@@ -321,8 +324,6 @@ export default {
     font: inherit;
     color: inherit;
     background-color: transparent;
-    /* show a hand cursor on hover; some argue that we
-    should keep the default arrow cursor for buttons */
     cursor: pointer;
   }
 
@@ -352,7 +353,7 @@ export default {
   .btn__flat:hover {
       background-color: var(--bg-color__light);
   }
-  .btn__flat:focus {
+  button:focus {
       outline: none;
   }
 
@@ -369,7 +370,9 @@ export default {
   }
 
   #overlay .title {
-    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     font-family: Roboto, sans-serif;
     font-size: 2em;
     font-weight: 200;
@@ -474,6 +477,24 @@ export default {
   .fade-enter, .fade-leave-to {
     opacity: 0;
     transform: translateY(20px);
+  }
+
+  .exit {
+    width: 20px;
+    height: 20px;
+    right: -56%;
+    top: -6px;
+    position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewPort='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='1' y1='20' x2='20' y2='1' stroke='white' stroke-width='2'/%3E%3Cline x1='1' y1='1' x2='20' y2='20' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+  }
+
+  header>h1 {
+    width: 20%;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    font-weight: inherit;
+    font-size: inherit;
+    max-height: 1em;
   }
 
 </style>
