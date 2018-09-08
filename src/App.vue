@@ -2,7 +2,12 @@
   <div id='app' @keydown.esc='hide_help'>
     <span class='clock'> {{hours}}:{{minutes}}</span>
     <input id='search-box' v-model='cmd' v-on:keyup.enter='parseCmd' v-on:keyup.up='show_prev_cmd' v-on:keyup.down='show_next_cmd' autofocus autocomplete='off' autocapitalize='none' size='30' placeholder='get started...'>
-    <button class='btn__flat' v-on:click='show_help'>Help</button>
+    <button class='btn__flat __align-right' v-on:click='show_help'>Help</button>
+
+    <aside class="credit">
+        <p class="logo-lead-in">Made by</p>
+        <button class='btn__flat __align-left'><a class="nostyle phil-denhoff-logo" href="https://denhoff.ca">Phil<br>Denhoff</a></button>
+    </aside>
 
     <transition name='fade'>
       <div id='overlay' v-if='display_help === true'>
@@ -257,6 +262,15 @@ export default {
     background-color: var(--bg-color);
   }
 
+  a.nostyle {
+    text-decoration: none;
+  }
+
+  a.nostyle:hover {
+    text-decoration: none;
+    opacity: 1;
+  }
+
   #app {
     font-family: 'Consolas', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -313,7 +327,6 @@ export default {
   }
 
   .btn__flat {
-      text-align: right;
       text-decoration: none;
       margin: 2px 0;
       border: none;
@@ -322,6 +335,14 @@ export default {
       transition: all 0.2s;
       color: var(--text-color);
       background-color: var(--bg-color);
+  }
+
+  .__align-right {
+      text-align: right;
+  }
+
+  .__align-left {
+      text-align: left;
   }
 
   .btn__flat:active {
@@ -417,6 +438,34 @@ export default {
     background-color: #e74c3c;
     border-left-color:#b82e24;
     font-size: 1.1em;
+  }
+
+  .phil-denhoff-logo {
+    @import url('https://fonts.googleapis.com/css?family=Playfair+Display:900');
+    font-family: 'Playfair Display';
+    font-weight: 900;
+    font-size: 1.6em;
+    color: #000;
+    line-height: 0.2em;
+    margin-top: 2vh;
+    cursor: default;
+    text-decoration: none;
+  }
+
+  .logo-lead-in {
+    margin-block-end: 0em;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-family: Roboto;
+    margin-left: 16px;
+  }
+
+  .credit {
+    position: absolute;
+    text-align: left;
+    left: 0;
+    bottom: 0;
+    margin: 10px;
   }
 
   .fade-enter-active, .fade-leave-active {
