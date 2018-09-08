@@ -1,21 +1,22 @@
 <template>
-  <div id='app' v-on:keyup.esc='hide_help'>
-    <span id='clock'> {{hours}}:{{minutes}}</span>
-    <input id='search-box' v-model='cmd' v-on:keyup.enter='parseCmd' v-on:keyup.up='show_prev_cmd' v-on:keyup.down='show_next_cmd' autofocus autocomplete='off' autocapitalize='none' size='30' placeholder='help'>
+  <div id='app' @keydown.esc='hide_help'>
+    <span class='clock'> {{hours}}:{{minutes}}</span>
+    <input id='search-box' v-model='cmd' v-on:keyup.enter='parseCmd' v-on:keyup.up='show_prev_cmd' v-on:keyup.down='show_next_cmd' autofocus autocomplete='off' autocapitalize='none' size='30' placeholder='get started...'>
+    <button class='btn__flat' v-on:click='show_help'>Help</button>
 
     <transition name='fade'>
-      <div id='overlay' v-if='display_help === true' v-on:click='hide_help'>
+      <div id='overlay' v-if='display_help === true'>
         <h1 class='title'>Help</h1>
           <h3 class='subtitle'>Press <span class='key'>esc</span> to close.</h3>
           <section id='commandListingContainer'>
               <section class='commandList' v-for='category in command_categories' :key='category.title'>
                 <h3>{{category.title}}</h3>
-                <ul id='searchList'>
-                   <li v-for='cmd in category.list' :key='cmd.command'>
-                      {{ cmd.helpDesc }}  <br />
-                      <span class='command'>{{ cmd.helpCommand }}</span>
-                    </li>
-                </ul>
+                <dl id='searchList'>
+                   <template v-for='cmd in category.list' >
+                      <dt :key="cmd.command+'_dt'">{{ cmd.helpDesc }}</dt>
+                      <dd class='command' :key="cmd.command+'_dd'">{{ cmd.helpCommand }}</dd>
+                    </template>
+                </dl>
               </section>
           </section>
       </div>
@@ -47,7 +48,9 @@ function getMinutes () {
 }
 
 function getHour () {
-    return padZero(getDate().getHours() % 12)
+    let hour = getDate().getHours() % 12;
+    if (hour == 0) hour = 12;
+    return padZero(hour)
 }
 
 function autoPopulate (cmdList, commandFile, type, vm) {
@@ -55,7 +58,7 @@ function autoPopulate (cmdList, commandFile, type, vm) {
         // Ignore __esModule and set defaultFunction to execute for this file type
         if (val === '__esModule') continue
         if (val === 'defaultFunction') {
-            vm.categoryFunctions[type] = commandFile[val]
+            vm.category_functions[type] = commandFile[val]
             continue
         }
         if (val.includes('hidden')) {
@@ -88,7 +91,8 @@ export default {
             browser_cmds: {}, // All available browser shortcuts
             remote_cmds: {}, // All available remote shortcuts
             command_categories: [], // Different categories of commands
-            category_functions: {} // Functions for each category
+            category_functions: {}, // Functions for each category
+            clock_unready: true
         }
     },
     methods: {
@@ -138,7 +142,6 @@ export default {
         show_prev_cmd: function () {
             this.cmd = this.cmd_history[this.cmd_index]
             if (this.cmd_index < this.cmd_history.length - 1) this.cmd_index++
-            console.log(this.cmd)
         },
 
         /** Replaces displayed command with next command from history. */
@@ -160,6 +163,7 @@ export default {
 
         /** Hides help menu. */
         hide_help: function () {
+            console.log('Hiding help')
             this.display_help = false
         },
 
@@ -192,16 +196,30 @@ export default {
             }
             // no function found
             return [undefined, undefined]
+        },
+
+        escapeKeyListener: function(evt) {
+            if (evt.keyCode === 27 && this.display_help) {
+                this.hide_help()
+            }
         }
+    },
+    destroyed: function() {
+        document.removeEventListener('keyup', this.escapeKeyListener);
     },
     /** Sets timer for clock, loads history from local storage, and populates commands based on files.
      */
     created: function () {
+        // Add escape key event listener
+        document.addEventListener('keyup', this.escapeKeyListener);
+
+        this.minutes = getMinutes()
+        this.hours = getHour()
+
         // Set timer for clock
-        var vm = this
         setInterval(() => {
-            vm.minutes = getMinutes()
-            vm.hours = getHour()
+            this.minutes = getMinutes()
+            this.hours = getHour()
         }, 1000)
 
         // Load history from LocalStorage
@@ -210,9 +228,9 @@ export default {
         }
 
         // Auto populate based on search file
-        autoPopulate(this.search_cmds, search, 'search', vm)
-        autoPopulate(this.browser_cmds, browser, 'browser', vm)
-        autoPopulate(this.remote_cmds, remote, 'remote', vm)
+        autoPopulate(this.search_cmds, search, 'search', this)
+        autoPopulate(this.browser_cmds, browser, 'browser', this)
+        autoPopulate(this.remote_cmds, remote, 'remote', this)
     },
     watch: {
         cmd_history: function () {
@@ -226,9 +244,11 @@ export default {
 <style lang='scss'>
 
   :root {
-    --bg-color: #2F4858;
-    --text-color: #F26419;
-    --alt-text-color: #332f2f;
+    --bg-color: #f8f8f8;
+    --bg-color__light: #9e9e9e33;
+    --clock-color: #F26419;
+    --text-color: #332f2f;
+    --alt-text-color: #2066b2;
     --accent-color: #F26419;
   }
 
@@ -243,49 +263,88 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     font-size: 16px;
-    width: 100vw;
+    width: 50vw;
+    margin-left: 25vw;
     display: flex;
     flex-direction: column;
     align-items: center;
 
   }
 
-  #clock {
+  .clock {
     /* Text */
-    font-family: monospace;
-    font-size: 6em;
-    text-align: center;
+    font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
+    font-size: 96px;
     margin-top: 20vh;
-    color: var(--text-color);
+    color: var(--clock-color);
+    margin-bottom: 10vh;
   }
 
   #search-box {
     /* Text */
-    font-family: Segoe, 'Segoe UI', 'DejaVu Sans', 'Trebuchet MS', Verdana, sans-serif;
+    font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
     font-size: 1.625em;
     resize: none;
-    text-align: center;
+    text-align: left;
     /* Display */
-    width: 40vw;
+    width: 46vw;
     height: 8vh;
-    padding: 0px 2vw;
-    margin-bottom: 8vh;
+    padding: 0vw 2vw;
+    margin-bottom: 2vh;
     /* Coloring / Styling */
-    color: var(--accent-color);
-    border-width: 0px;
-    border-bottom: 2px solid var(--text-color);
-    background-color: var(--bg-color);
+    color: #2F4858;
+    border-width: 0;
     outline: none;
+    -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
+    -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
+    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
+  }
+
+  button {
+    align-self: flex-end;
+    padding: 0;
+    border: none;
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    /* show a hand cursor on hover; some argue that we
+    should keep the default arrow cursor for buttons */
+    cursor: pointer;
+  }
+
+  .btn__flat {
+      text-align: right;
+      text-decoration: none;
+      margin: 2px 0;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5em 1em;
+      transition: all 0.2s;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+  }
+  
+  .btn__flat:active {
+      transform: translateY(2px);
+  }
+  
+  .btn__flat:hover {
+      background-color: var(--bg-color__light);
+  }
+  .btn__flat:focus {
+      outline: none;
   }
 
   #overlay {
-    width: 100vw;
-    min-height: 100%;
-    margin: 0;
-    background-color: #ff945c;
+    width: 80vw;
+    min-height: 60%;
+    max-height: 80%;
+    overflow: scroll;
+    background-color: rgba(255, 255, 255, 1);
     position: absolute;
-    top: 0vh;
+    top: 10%;
     font-family: sans-serif;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
   }
 
   #overlay .title {
@@ -296,7 +355,7 @@ export default {
     margin-bottom: 3vh;
     padding: 2vh 8px 2vh 8px;
     color: #fff;
-    background-color: var(--alt-text-color);
+    background-color: var(--text-color);
   }
 
   #overlay .subtitle {
@@ -306,12 +365,12 @@ export default {
     font-weight: 200;
     margin-top: 0;
     margin-bottom: 3vh;
-    color: var(--alt-text-color);
+    color: var(--text-color);
   }
 
   #overlay .key {
-    color: #ff945c;
-    background: var(--alt-text-color);
+    color: var(--bg-color);
+    background: var(--text-color);
     padding: 2px 4px 3px 4px;
     border-radius: 5px;
   }
@@ -327,12 +386,13 @@ export default {
 
   section .commandList {
     width: 30%;
-    color: var(--alt-text-color);
+    color: var(--text-color);
   }
 
-  section .commandList li {
+  section .commandList dd {
     margin-bottom: 16px;
     list-style: none;
+    margin-inline-start: 0;
   }
 
   section .commandList h3 {
@@ -343,7 +403,7 @@ export default {
   section .commandList .command {
     font-family: monospace;
     font-size: 0.8em;
-    color:  var(--bg-color);
+    color:  var(--alt-text-color);
   }
 
   h1.title {
@@ -360,10 +420,11 @@ export default {
   }
 
   .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
+    transition: all .5s;
   }
   .fade-enter, .fade-leave-to {
     opacity: 0;
+    transform: translateY(20px);
   }
 
 </style>
