@@ -48,8 +48,8 @@ function getMinutes () {
 }
 
 function getHour () {
-    let hour = getDate().getHours() % 12;
-    if (hour == 0) hour = 12;
+    let hour = getDate().getHours() % 12
+    if (hour === 0) hour = 12
     return padZero(hour)
 }
 
@@ -198,20 +198,20 @@ export default {
             return [undefined, undefined]
         },
 
-        escapeKeyListener: function(evt) {
+        escapeKeyListener: function (evt) {
             if (evt.keyCode === 27 && this.display_help) {
                 this.hide_help()
             }
         }
     },
-    destroyed: function() {
-        document.removeEventListener('keyup', this.escapeKeyListener);
+    destroyed: function () {
+        document.removeEventListener('keyup', this.escapeKeyListener)
     },
     /** Sets timer for clock, loads history from local storage, and populates commands based on files.
      */
     created: function () {
         // Add escape key event listener
-        document.addEventListener('keyup', this.escapeKeyListener);
+        document.addEventListener('keyup', this.escapeKeyListener)
 
         this.minutes = getMinutes()
         this.hours = getHour()
@@ -323,11 +323,11 @@ export default {
       color: var(--text-color);
       background-color: var(--bg-color);
   }
-  
+
   .btn__flat:active {
       transform: translateY(2px);
   }
-  
+
   .btn__flat:hover {
       background-color: var(--bg-color__light);
   }
