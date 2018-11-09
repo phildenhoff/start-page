@@ -15,7 +15,7 @@
             <button class='exit' v-on:click='hide_help'></button>
             <h1>Help</h1>
           </header>
-          <h3 class='subtitle'>Press <span class='key'>esc</span> to close.</h3>
+          <h3 class='subtitle' v-html="device_dependent_text[device_style]['overlay_subtitle']">Press X to close.</h3>
           <section id='commandListingContainer'>
               <section class='commandList' v-for='category in command_categories' :key='category.title'>
                 <h3>{{category.title}}</h3>
@@ -100,7 +100,16 @@ export default {
             remote_cmds: {}, // All available remote shortcuts
             command_categories: [], // Different categories of commands
             category_functions: {}, // Functions for each category
-            clock_unready: true
+            clock_unready: true,
+            device_style: '', // Set to a value on component `created`
+            device_dependent_text: {
+                'mobile': {
+                    'overlay_subtitle': 'Press X to close'
+                },
+                'desktop': {
+                    'overlay_subtitle': 'Press <span class="key">esc</span> to close.'
+                }
+            }
         }
     },
     methods: {
@@ -210,6 +219,20 @@ export default {
             if (evt.keyCode === 27 && this.display_help) {
                 this.hide_help()
             }
+        },
+
+        detectMobile: function () {
+            if (navigator.userAgent.match(/Android/i) ||
+                navigator.userAgent.match(/webOS/i) ||
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/iPod/i) ||
+                navigator.userAgent.match(/BlackBerry/i) ||
+                navigator.userAgent.match(/Windows Phone/i)) {
+                return true
+            } else {
+                return false
+            }
         }
     },
     destroyed: function () {
@@ -233,6 +256,13 @@ export default {
         // Load history from LocalStorage
         if (localStorage.getItem('history')) {
             this.cmd_history = JSON.parse(localStorage.getItem('history'))
+        }
+
+        // Set the device-dependent text
+        if (this.detectMobile()) {
+            this.device_style = 'mobile'
+        } else {
+            this.device_style = 'desktop'
         }
 
         // Auto populate based on search file
@@ -280,8 +310,8 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     font-size: 16px;
-    width: 50vw;
-    margin-left: 25vw;
+    width: 75vw;
+    margin-left: 12.5vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -291,7 +321,7 @@ export default {
   .clock {
     /* Text */
     font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
-    font-size: 96px;
+    font-size: 3em;
     margin-top: 20vh;
     color: var(--clock-color);
     margin-bottom: 10vh;
@@ -300,18 +330,19 @@ export default {
   #search-box {
     /* Text */
     font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
-    font-size: 1.625em;
+    font-size: 1.3em;
     resize: none;
     text-align: left;
     /* Display */
-    width: 46vw;
-    height: 8vh;
+    width: 100%;
+    height: 60px;
     padding: 0vw 2vw;
     margin-bottom: 2vh;
     /* Coloring / Styling */
     color: #2F4858;
     border-width: 0;
     outline: none;
+    border-radius: 1px;
     -webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
     -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
     box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.4);
@@ -404,12 +435,12 @@ export default {
     padding-right: 5%;
     padding-left: 5%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
   }
 
   section .commandList {
-    width: 30%;
+    min-width: 30%;
     color: var(--text-color);
   }
 
@@ -417,6 +448,7 @@ export default {
     margin-bottom: 16px;
     list-style: none;
     margin-inline-start: 0;
+    margin-left: 0;
   }
 
   section .commandList h3 {
@@ -460,15 +492,12 @@ export default {
     color: var(--text-color);
     opacity: 0.8;
     font-family: Roboto;
-    margin-left: 16px;
   }
 
   .credit {
-    position: absolute;
-    text-align: left;
-    left: 0;
-    bottom: 0;
-    margin: 10px;
+    position: static;
+    text-align: center;
+    margin-top: 80px;
   }
 
   .fade-enter-active, .fade-leave-active {
@@ -482,19 +511,39 @@ export default {
   .exit {
     width: 20px;
     height: 20px;
-    right: -56%;
+    left: 50%;
     top: -6px;
     position: relative;
     background-image: url("data:image/svg+xml,%3Csvg viewPort='0 0 20 20' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='1' y1='20' x2='20' y2='1' stroke='white' stroke-width='2'/%3E%3Cline x1='1' y1='1' x2='20' y2='20' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
   }
 
   header>h1 {
-    width: 20%;
     margin-block-start: 0;
     margin-block-end: 0;
     font-weight: inherit;
     font-size: inherit;
     max-height: 1em;
+  }
+
+  // Customize for Desktops
+  @media only screen and (min-width: 600px) {
+    #app {
+      width: 50vw;
+      margin-left: 25vw;
+    }
+
+    .clock {
+      font-size: 6em;
+    }
+
+    #search-box {
+      font-size: 1.625 em;
+      height: 10vh;
+    }
+
+    section#commandListingContainer {
+      flex-direction: row;
+    }
   }
 
 </style>
