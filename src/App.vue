@@ -6,7 +6,9 @@
 
     <aside class="credit">
         <p class="logo-lead-in">Made by</p>
-        <button class='btn__flat __align-left'><a class="nostyle phil-denhoff-logo" href="https://denhoff.ca">Phil<br>Denhoff</a></button>
+        <div class='btn__flat __align-left'>
+          <a class="nostyle phil-denhoff-logo" href="https://denhoff.ca">Phil<br>Denhoff</a>
+        </div>
     </aside>
 
     <transition name='fade'>
