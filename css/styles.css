@@ -2,10 +2,10 @@
 :root {
   --bg-color: #f8f8f8;
   --bg-color__light: #9e9e9e33;
-  --clock-color: #F26419;
+  --clock-color: #f26419;
   --text-color: #332f2f;
   --alt-text-color: #2066b2;
-  --accent-color: #F26419;
+  --accent-color: #f26419;
 }
 body {
   margin: 0;
@@ -19,7 +19,7 @@ a.nostyle:hover {
   opacity: 1;
 }
 #app {
-  font-family: 'Consolas', Helvetica, Arial, sans-serif;
+  font-family: "Consolas", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -32,7 +32,7 @@ a.nostyle:hover {
 }
 .clock {
   /* Text */
-  font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
+  font-family: Segoe, Segoe UI, DejaVu Sans, Trebuchet MS, Verdana, sans-serif;
   font-size: 3em;
   margin-top: 20vh;
   color: var(--clock-color);
@@ -40,7 +40,7 @@ a.nostyle:hover {
 }
 #search-box {
   /* Text */
-  font-family: Segoe,Segoe UI,DejaVu Sans,Trebuchet MS,Verdana,sans-serif;
+  font-family: Segoe, Segoe UI, DejaVu Sans, Trebuchet MS, Verdana, sans-serif;
   font-size: 1.3em;
   resize: none;
   text-align: left;
@@ -50,7 +50,7 @@ a.nostyle:hover {
   padding: 0vw 2vw;
   margin-bottom: 2vh;
   /* Coloring / Styling */
-  color: #2F4858;
+  color: #2f4858;
   border-width: 0;
   outline: none;
   border-radius: 1px;
@@ -169,7 +169,7 @@ h1.title {
   font-size: 1.1em;
 }
 .phil-denhoff-logo {
-  font-family: 'Playfair Display';
+  font-family: "Playfair Display";
   font-weight: 900;
   font-size: 1.6em;
   color: #000;
@@ -189,10 +189,12 @@ h1.title {
   text-align: center;
   margin-top: 80px;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: all .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
   transform: translateY(20px);
 }
@@ -212,18 +214,39 @@ header > h1 {
   max-height: 1em;
 }
 @media only screen and (min-width: 600px) {
-#app {
+  #app {
     width: 50vw;
     margin-left: 25vw;
-}
-.clock {
+  }
+  .clock {
     font-size: 6em;
-}
-#search-box {
+  }
+  #search-box {
     font-size: 1.625 em;
     height: 10vh;
-}
-section#commandListingContainer {
+  }
+  section#commandListingContainer {
     flex-direction: row;
+  }
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    filter: invert();
+    background-color: #000;
+  }
+
+  .clock {
+    filter: invert();
+  }
+
+  #overlay,
+  #search-box {
+    box-shadow: none;
+  }
+
+  #search-box {
+    background-color: #ddd;
+    border: none;
+  }
 }
