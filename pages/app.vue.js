@@ -7,9 +7,9 @@ var app = Vue.component("App", {
 
         <aside class="credit">
             <p class="logo-lead-in">Made by</p>
-            <div class='btn__flat __align-left'>
-            <a class="nostyle phil-denhoff-logo" href="https://denhoff.ca">Phil<br>Denhoff</a>
-            </div>
+            <a class="nostyle" href="https://denhoff.ca"><div class='btn__flat __align-left'>
+            <p class="phil-denhoff-logo" href="https://denhoff.ca">Phil<br>Denhoff</p>
+            </div></a>
         </aside>
 
         <transition name='fade'>

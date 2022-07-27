@@ -174,10 +174,10 @@ h1.title {
   font-weight: 900;
   font-size: 1.6em;
   color: #000;
-  line-height: 0.2em;
-  margin-top: 2vh;
+  line-height: 0.7em;
   cursor: default;
   text-decoration: none;
+  margin: 0;
 }
 .logo-lead-in {
   margin-block-end: 0em;
